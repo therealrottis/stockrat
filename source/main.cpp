@@ -1,7 +1,8 @@
 #include "includes.h"
-#include "board.cpp"
-#include "engine.cpp"
+#include "board.h"
+#include "engine.h"
 
+#include "implementation.h"
 
 void interactive() {
     while (1) {
