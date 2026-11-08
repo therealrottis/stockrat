@@ -160,7 +160,7 @@ const std::pair<Castles, std::string> all_castles[4] = {
     {Castles::BLACK_QUEEN, "black queenside"},
 };
 
-enum class GameState {
+enum class GameState : uint8_t {
     IN_PROGRESS,
     DRAW,
     WHITE_WIN,
@@ -503,13 +503,12 @@ public:
 
 const Move INVALID_MOVE;
 
-
 class Evaluation {
 private:
-    Player player = Player::UNDEFINED;
-    GameState state = GameState::IN_PROGRESS;
     double material = 0.0;
     bool is_check = false;
+    Player player = Player::UNDEFINED;
+    GameState state = GameState::IN_PROGRESS;
 
 public:
     Evaluation() = default;
@@ -618,13 +617,12 @@ protected:
     // [0][0] is A8
     // [7][7] is H1
     Piece m_pieces[8][8];
-    Player m_to_move = Player::UNDEFINED;
     bool m_allowed_castles[4];
-    // y, x
-    Position m_en_passant_target_square = INVALID_POS;
     int m_halfmove_clock = -1;
     int m_fullmove_clock = -1;
     GameState m_state = GameState::IN_PROGRESS;
+    Position m_en_passant_target_square = INVALID_POS;
+    Player m_to_move = Player::UNDEFINED;
 
 public:
     Board () {
@@ -1657,6 +1655,10 @@ public:
         return new_board.is_in_check(pos, side);
     }
 
+    // TODO: add positional evaluation
+    // - central control
+    // - bad pawn structure
+    // - possibly piece activity?
     Evaluation get_evaluation() {
         Position king_pos = find_piece(m_to_move == Player::WHITE ? Piece::BLACK_KING : Piece::WHITE_KING);
 

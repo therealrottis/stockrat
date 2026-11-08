@@ -5,10 +5,10 @@
 
 class GameTree {
 private:
-    Evaluation eval;
     Board board;
-    Move previous_move = INVALID_MOVE;
+    Evaluation eval;
     std::vector<GameTree> moves;
+    Move previous_move = INVALID_MOVE;
     int depth = 1;
     bool solved = false;
 
