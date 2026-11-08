@@ -509,14 +509,16 @@ private:
     Player player = Player::UNDEFINED;
     GameState state = GameState::IN_PROGRESS;
     double material = 0.0;
+    bool is_check = false;
 
 public:
     Evaluation() = default;
     
-    Evaluation(Player p_player, GameState p_state, double p_material) {
+    Evaluation(Player p_player, GameState p_state, double p_material, bool p_is_check) {
         player = p_player;
         state = p_state;
         material = p_material;
+        is_check = p_is_check;
     }
 
     void inherit_from(Evaluation &other) {
@@ -542,6 +544,11 @@ public:
                 std::cerr << &other << ' ' << (int) other.player << ' ' << (int) other.state << ' ' << other.material << std::endl;
                 return false;
             }
+            
+            // TODO fix? ei toimi?
+            bool equal_material = abs(material - other.material) < 1.0;
+            if (equal_material && is_check && !other.is_check) return false;
+            if (equal_material && !is_check && other.is_check) return true;
 
             if (player == Player::BLACK) return material < other.material;
             else return other.material < material;
@@ -1651,7 +1658,14 @@ public:
     }
 
     Evaluation get_evaluation() {
-        Evaluation eval = Evaluation(m_to_move == Player::WHITE ? Player::BLACK : Player::WHITE, m_state, evaluate_material());
+        Position king_pos = find_piece(m_to_move == Player::WHITE ? Piece::BLACK_KING : Piece::WHITE_KING);
+
+        Evaluation eval = Evaluation(
+            m_to_move == Player::WHITE ? Player::BLACK : Player::WHITE,
+            m_state,
+            evaluate_material(),
+            is_in_check(king_pos, m_to_move)
+        );
         if (!eval.is_valid()) {
             std::cerr << "Invalid evaluation created from board\n";
             print_state();

@@ -35,7 +35,7 @@ void interactive() {
                 std::cout << "Exporting fen...\n";
                 std::cout << board.export_fen() << "\n\n";
             } else if (move == "e") {
-                Move best_move = Engine::solve(board, 3);
+                Move best_move = Engine::solve(board, 2);
                 board.execute_move(best_move);
                 board.print_state();
                 board.print_legal_moves();
